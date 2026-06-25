@@ -54,7 +54,7 @@ def _deepseek_v4_mxfp8_quant_recipe() -> RecipeConfig:
     )
 
 
-def deepseek_v4_flash_pretrain_config() -> ConfigContainer:
+def deepseek_v4_flash_pretrain_config(hf_path: str = "deepseek-ai/DeepSeek-V4-Flash") -> ConfigContainer:
     """Return the DeepSeek-V4-Flash Blackwell pre-training base config.
 
     Recommended Blackwell baseline: TP=1, PP=4, EP=8, CP=1.
@@ -62,7 +62,7 @@ def deepseek_v4_flash_pretrain_config() -> ConfigContainer:
     use_fused_mhc = deepseek_v4_supports_blackwell_fused_kernels()
     cfg = _pretrain_common()
     cfg.model = AutoBridge.from_hf_pretrained(
-        "deepseek-ai/DeepSeek-V4-Flash", trust_remote_code=True
+        hf_path, trust_remote_code=True
     ).to_megatron_provider(load_weights=False)
 
     cfg.model.tensor_model_parallel_size = 1
