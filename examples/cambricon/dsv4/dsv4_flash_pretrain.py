@@ -6,6 +6,7 @@ from megatron.bridge.recipes.deepseek import (
 )
 from megatron.bridge.training.pretrain import pretrain
 from megatron.bridge.training.gpt_step import forward_step
+from megatron.bridge.training.config import ProfilingConfig
 if __name__ == "__main__":
     #/workspace/dataset/favorite/soft-data-platform/v1/models/DeepSeek-V4-Flash/
     #/workspace/dataset/favorite/soft-data-platform/v1/models/DeepSeek-V4-Pro/
@@ -78,5 +79,20 @@ if __name__ == "__main__":
 
     #AllReduce of CNCL has some problems
     cfg.ddp.average_in_collective = False
+
+    # cfg.profiling = ProfilingConfig(
+    #     use_nsys_profiler=True,
+    #     profile_step_start=10,
+    #     profile_step_end=15,
+    #     profile_ranks=[0, 1],  # Profile first two ranks
+    #     record_shapes=False,   # Optional: record tensor shapes
+    # )
+    cfg.profiling = ProfilingConfig(
+        use_pytorch_profiler=True,
+        profile_step_start=10,
+        profile_step_end=15,
+        profile_ranks=[0, 1],
+        record_shapes=True,    # Record tensor shapes for detailed analysis
+    )
 
     pretrain(cfg, forward_step)
